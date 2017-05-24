@@ -1,0 +1,144 @@
+[gd_scene load_steps=8 format=1]
+
+[ext_resource path="res://Test Environment.gd" type="Script" id=1]
+[ext_resource path="res://icon.png" type="Texture" id=2]
+
+[sub_resource type="Curve2D" id=1]
+
+bake_interval = 5.0
+_data = {
+"points": Vector2Array( 0, 0, 0, 0, 76.9655, 121.201, 0, 0, 0, 0, 337.735, 170.943, 0, 0, 0, 0, 321.154, 300.574, 0, 0, 0, 0, 116.156, 261.384, 0, 0, 0, 0, 149.318, 439.25, 0, 0, 0, 0, 304.574, 395.537, 0, 0, 0, 0, 76.9655, 121.201 )
+}
+
+[sub_resource type="GDScript" id=2]
+
+script/source = "extends Path2D
+
+var pointArr
+
+func _ready():
+	#var n1= Vecotr2()
+	#get_curve().add_point(Vector2(10, 10), Vector2(15, 10), Vector2(10, 15))
+	#get_curve().add_point(Vector2(100, 100), Vector2(105, 100), Vector2(100, 105))
+	#get_curve().add_point(Vector2(100, 200), Vector2(105, 200), Vector2(100, 205))
+	pointArr= get_curve().tesselate(5, 4)
+	set_process(true)
+	_draw()
+	
+func _draw():
+	for i in range(0, pointArr.size()-2):
+		#print(\"I'm looping!\")
+		draw_line(pointArr[i], pointArr[i+1], Color(0, 0, 0))
+
+"
+
+[sub_resource type="GDScript" id=3]
+
+script/source = "extends PathFollow2D
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+var previousPositions
+
+func _ready():
+	set_cubic_interpolation(true)
+	set_loop(true)
+	set_process(true)
+	#prevousPositions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+func _process(delta):
+	#print(\"I'm processing. Delta= \", delta)
+	#_draw()
+	var i= previousPositions.size()-1
+	while i>0:
+		previousPositions[i+1]= previousPositions[i]
+		i-= 1
+	previousPositions[0]= get_unit_offset()
+	set_unit_offset(get_unit_offset()+delta/50)
+
+func _draw():
+	draw_circle(Vector2(0, 0), 20, Color(255, 255, 255))
+"
+
+[sub_resource type="GDScript" id=4]
+
+script/source = "extends Sprite
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+
+func _ready():
+	set_process(true)
+
+func _process(delta):
+	_draw()
+
+func _draw():
+	#draw_circle(Vector2(0, 0), 20, Color(255, 255, 255))
+	"
+
+[sub_resource type="GDScript" id=5]
+
+script/source = "extends PathFollow2D
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+
+func _ready():
+	set_cubic_interpolation(true)
+	set_loop(true)
+	set_process(true)
+
+func _process(delta):
+	#print(\"I'm processing. Delta= \", delta)
+	set_unit_offset(get_unit_offset()+delta/40)"
+
+[node name="Node2D" type="Node2D"]
+
+script/script = ExtResource( 1 )
+
+[node name="Path2D" type="Path2D" parent="."]
+
+curve = SubResource( 1 )
+script/script = SubResource( 2 )
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+
+transform/pos = Vector2( 76.9655, 121.201 )
+transform/rot = -10.7994
+offset = 0.0
+h_offset = 0.0
+v_offset = 0.0
+rotate = true
+cubic_interp = true
+loop = true
+lookahead = 4.0
+script/script = SubResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="Path2D/PathFollow2D"]
+
+script/script = SubResource( 4 )
+
+[node name="PathFollow2D 2" type="PathFollow2D" parent="Path2D"]
+
+visibility/visible = false
+transform/pos = Vector2( 76.9655, 121.201 )
+transform/rot = -10.7994
+offset = 0.0
+h_offset = 0.0
+v_offset = 0.0
+rotate = true
+cubic_interp = true
+loop = true
+lookahead = 4.0
+script/script = SubResource( 5 )
+
+[node name="Sprite1" type="Sprite" parent="Path2D/PathFollow2D 2"]
+
+transform/scale = Vector2( 0.3, 0.3 )
+texture = ExtResource( 2 )
+
+
