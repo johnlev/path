@@ -7,7 +7,7 @@
 
 bake_interval = 5.0
 _data = {
-"points": Vector2Array( 0, 0, 0, 0, 76.9655, 121.201, 0, 0, 0, 0, 337.735, 170.943, 0, 0, 0, 0, 321.154, 300.574, 0, 0, 0, 0, 116.156, 261.384, 0, 0, 0, 0, 149.318, 439.25, 0, 0, 0, 0, 304.574, 395.537, 0, 0, 0, 0, 76.9655, 121.201 )
+"points": Vector2Array(  )
 }
 
 [sub_resource type="GDScript" id=2]
@@ -18,9 +18,9 @@ var pointArr
 
 func _ready():
 	#var n1= Vecotr2()
-	#get_curve().add_point(Vector2(10, 10), Vector2(15, 10), Vector2(10, 15))
-	#get_curve().add_point(Vector2(100, 100), Vector2(105, 100), Vector2(100, 105))
-	#get_curve().add_point(Vector2(100, 200), Vector2(105, 200), Vector2(100, 205))
+	get_curve().add_point(Vector2(10, 10), Vector2(15, 10), Vector2(10, 15))
+	get_curve().add_point(Vector2(100, 100), Vector2(105, 100), Vector2(100, 105))
+	get_curve().add_point(Vector2(100, 200), Vector2(105, 200), Vector2(100, 205))
 	pointArr= get_curve().tesselate(5, 4)
 	set_process(true)
 	_draw()
@@ -42,13 +42,12 @@ script/source = "extends PathFollow2D
 
 func _ready():
 	set_cubic_interpolation(true)
-	set_loop(true)
+	set_loop(false)
 	set_process(true)
 
 func _process(delta):
 	#print(\"I'm processing. Delta= \", delta)
 	set_unit_offset(get_unit_offset()+delta/50)
-	
 "
 
 [node name="Node2D" type="Node2D"]
