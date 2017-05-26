@@ -62,6 +62,8 @@ script/script = SubResource( 2 )
 
 [node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
 
+transform/pos = Vector2( 134.244, 155.87 )
+transform/rot = -90.7442
 offset = 0.0
 h_offset = 0.0
 v_offset = 0.0
