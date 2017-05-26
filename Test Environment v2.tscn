@@ -1,7 +1,6 @@
 [gd_scene load_steps=6 format=1]
 
 [ext_resource path="res://Test Environment.gd" type="Script" id=1]
-[ext_resource path="res://icon.png" type="Texture" id=2]
 
 [sub_resource type="Curve2D" id=1]
 
@@ -48,8 +47,39 @@ func _ready():
 func _process(delta):
 	#print(\"I'm processing. Delta= \", delta)
 	set_unit_offset(get_unit_offset()+delta/50)
+	#_draw()
+
+func _draw():
+	draw_circle(Vector2(0, 0), 20, Color(255, 255, 255))"
+
+[sub_resource type="GDScript" id=4]
+
+script/source = "extends Sprite
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+
+func _ready():
+	set_process(true)
+	pass
+
+func _process(delta):
+	_draw()
+
+func _draw():
+	#print(\"I'm Drawing a Circle!\")
 	
-"
+	draw_circle(get_pos(), 20, Color(255, 0, 0))
+	draw_circle(get_parent().get_pos(), 20, Color(0, 255, 0))
+	draw_circle(get_parent().get_parent().get_pos(), 20, Color(0, 0, 255))
+	
+	#for i in range(5):
+	#	draw_circle(Vector2(-3*i, 0), 15+i, Color(255, 255, 255))
+	#for i in range(5, 15):
+	#	draw_circle(Vector2(-3*i, 0), 20, Color(255, 255, 255))
+	#for i in range(15, 20):
+	#	draw_circle(Vector2(-3*i, 0), 20-i, Color(255, 255, 255))"
 
 [node name="Node2D" type="Node2D"]
 
@@ -62,6 +92,8 @@ script/script = SubResource( 2 )
 
 [node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
 
+transform/pos = Vector2( 76.9655, 121.201 )
+transform/rot = -10.7994
 offset = 0.0
 h_offset = 0.0
 v_offset = 0.0
@@ -73,7 +105,6 @@ script/script = SubResource( 3 )
 
 [node name="Sprite" type="Sprite" parent="Path2D/PathFollow2D"]
 
-transform/scale = Vector2( 0.3, 0.3 )
-texture = ExtResource( 2 )
+script/script = SubResource( 4 )
 
 
