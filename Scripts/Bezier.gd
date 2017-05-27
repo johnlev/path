@@ -4,7 +4,7 @@ var projectResolution=Vector2(Globals.get("display/width"),Globals.get("display/
 
 var curve = self.get_curve() 
 var mag = 100
-var marg = 70
+var marg = 50
 var qx = 2
 var qy = 9
 
@@ -33,8 +33,8 @@ func _init():
 		var inVec = Vector2(mag * cos(theta), mag * sin(theta))
 		var outVec = Vector2(mag * cos(theta), mag * sin(theta))
 		
-		var posy = (starty) * qdy + marg
-		var posx = (startx) * qdx + marg
+		var posy = (starty) * qdy + marg + 40
+		var posx = (startx) * qdx + marg 
 		
 		if (dir):
 			startx+=1
@@ -52,7 +52,7 @@ func _init():
 #	curve.add_point(Vector2(marg+7,marg),Vector2(mag * cos(120), mag * sin(120)),-Vector2(mag * cos(-90), mag * sin(-90)))
 func _draw():
 	var points = curve.tesselate(5,4)
-	for i in range(0,points.size()):
+	for i in range(1,points.size()):
 		draw_line(points[i],points[i-1],Color8((255-(i%255)),i%255,0),2)
 func _ready():
 	_draw()

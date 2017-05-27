@@ -76,8 +76,8 @@ func _draw():
 	#print(\"I'm Drawing a Circle!\")
 	
 	#draw_circle(get_pos(), 20, Color(255, 0, 0))
-	#draw_circle(get_parent().get_pos(), 20, Color(0, 255, 0))
-	#draw_circle(get_parent().get_parent().get_pos(), 20, Color(0, 0, 255))
+#	draw_circle(get_parent().get_pos(), 20, Color(0, 255, 0))
+	draw_circle(get_parent().get_parent().get_pos(), 20, Color(0, 0, 255))
 	
 	for i in range(5):
 		draw_circle(Vector2(-3*i, 0), 15+i, Color(255, 255, 255))
