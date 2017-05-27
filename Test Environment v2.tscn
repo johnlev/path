@@ -12,6 +12,30 @@ _data = {
 
 [sub_resource type="GDScript" id=2]
 
+resource/name = "Path2D"
+script/source = "extends Path2D
+
+var pointArr
+
+func _ready():
+	#var n1= Vecotr2()
+	#get_curve().add_point(Vector2(10, 10), Vector2(15, 10), Vector2(10, 15))
+	#get_curve().add_point(Vector2(100, 100), Vector2(105, 100), Vector2(100, 105))
+	#get_curve().add_point(Vector2(100, 200), Vector2(105, 200), Vector2(100, 205))
+	pointArr= get_curve().tesselate(5, 4)
+	set_process(true)
+	_draw()
+	
+func _draw():
+	for i in range(0, pointArr.size()-2):
+		#print(\"I'm looping!\")
+		draw_line(pointArr[i], pointArr[i+1], Color(0, 0, 0))
+	#draw_line(pointArr[pointArr.size()-1], pointArr[0], Color(0, 0, 0))
+
+"
+
+[sub_resource type="GDScript" id=3]
+
 resource/name = "PathFollow2D"
 script/source = "extends PathFollow2D
 
@@ -27,7 +51,7 @@ func _ready():
 func _process(delta):
 	#print(\"I'm processing. Delta= \", delta)
 	set_unit_offset(get_unit_offset()+delta/50)
-	#_draw()
+	_draw()
 
 func _draw():
 	draw_circle(Vector2(0, 0), 20, Color(255, 255, 255))"
@@ -55,12 +79,12 @@ func _draw():
 #	draw_circle(get_parent().get_pos(), 20, Color(0, 255, 0))
 	draw_circle(get_parent().get_parent().get_pos(), 20, Color(0, 0, 255))
 	
-	#for i in range(5):
-	#	draw_circle(Vector2(-3*i, 0), 15+i, Color(255, 255, 255))
+	for i in range(5):
+		draw_circle(Vector2(-3*i, 0), 15+i, Color(255, 255, 255))
 	#for i in range(5, 15):
 	#	draw_circle(Vector2(-3*i, 0), 20, Color(255, 255, 255))
-	#for i in range(15, 20):
-	#	draw_circle(Vector2(-3*i, 0), 20-i, Color(255, 255, 255))"
+	for i in range(15, 20):
+		draw_circle(Vector2(-3*i, 0), i, Color(255, 255, 255))"
 
 [node name="Node2D" type="Node2D"]
 
