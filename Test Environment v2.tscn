@@ -67,35 +67,6 @@ func _draw():
 		set_offset(get_offset()-currentChange*20)
 	#draw_circle(Vector2(0, 0), 20, Color(255, 255, 255))"
 
-[sub_resource type="GDScript" id=3]
-
-resource/name = "Sprite"
-script/source = "extends Sprite
-
-# class member variables go here, for example:
-# var a = 2
-# var b = \"textvar\"
-
-func _ready():
-	set_process(true)
-
-func _process(delta):
-	_draw()
-
-func _draw():
-	#print(\"I'm Drawing a Circle!\")
-	
-	#draw_circle(get_pos(), 20, Color(255, 0, 0))
-#	draw_circle(get_parent().get_pos(), 20, Color(0, 255, 0))
-	draw_circle(get_parent().get_parent().get_pos(), 20, Color(0, 0, 255))
-	
-	#for i in range(5):
-	#	draw_circle(Vector2(-3*i, 0), 15+i, Color(255, 255, 255))
-	#for i in range(5, 15):
-	#	draw_circle(Vector2(-3*i, 0), 20, Color(255, 255, 255))
-	#for i in range(15, 20):
-	#	draw_circle(Vector2(-3*i, 0), i, Color(255, 255, 255))"
-
 [node name="Node2D" type="Node2D"]
 
 script/script = ExtResource( 1 )
