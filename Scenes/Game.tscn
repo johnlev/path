@@ -20,6 +20,7 @@ script/source = "extends PathFollow2D
 var trueOffset
 var deltaMultiplier
 var currentChange
+var canMove
 
 func _ready():
 	set_cubic_interpolation(true)
@@ -28,13 +29,15 @@ func _ready():
 	trueOffset= get_unit_offset()
 	deltaMultiplier= 30
 	currentChange= 0
+	canMove= true
 
 func _process(delta):
 	#print(\"I'm processing. Delta= \", delta)
 	currentChange= delta*deltaMultiplier
 	trueOffset= get_offset()+currentChange
 	_draw()
-	set_offset(trueOffset)
+	if canMove:
+		set_offset(trueOffset)
 
 func _draw():
 	draw_circle(Vector2(0, 0), 20, Color(255, 255, 255))
