@@ -1,0 +1,14 @@
+[gd_scene format=1]
+
+[node name="Start" type="Panel"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = -103.0
+margin/top = -45.0
+margin/right = 775.0
+margin/bottom = 1356.0
+
+
