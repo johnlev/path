@@ -1,5 +1,153 @@
-[gd_scene format=1]
+[gd_scene load_steps=13 format=1]
 
-[node name="Menu" type="Node2D"]
+[ext_resource path="res://Fonts/JuliusSansOne-Regular.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Textures/levelsButton.png" type="Texture" id=2]
+[ext_resource path="res://Textures/levelsButtonSelected.png" type="Texture" id=3]
+[ext_resource path="res://Textures/messageButton.png" type="Texture" id=4]
+[ext_resource path="res://Textures/messageButtonSelected.png" type="Texture" id=5]
+[ext_resource path="res://Textures/shareButton.png" type="Texture" id=6]
+[ext_resource path="res://Textures/shareButtonSelected.png" type="Texture" id=7]
+[ext_resource path="res://Textures/soundOff.png" type="Texture" id=8]
+[ext_resource path="res://Textures/soundOn.png" type="Texture" id=9]
+
+[sub_resource type="StyleBoxFlat" id=2]
+
+content_margin/left = -1.0
+content_margin/right = -1.0
+content_margin/top = -1.0
+content_margin/bottom = -1.0
+bg_color = Color( 0.847059, 0.929412, 0.952941, 1 )
+light_color = Color( 0.8, 0.8, 0.8, 0 )
+dark_color = Color( 0.8, 0.8, 0.8, 0 )
+border_size = 0
+border_blend = true
+draw_bg = true
+
+[sub_resource type="DynamicFont" id=1]
+
+font/size = 100
+font/use_mipmaps = false
+font/use_filter = false
+font/font = ExtResource( 1 )
+
+[sub_resource type="GDScript" id=3]
+
+script/source = "extends TextureButton
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+
+func _ready():
+	# Called every time the node is added to the scene.
+	# Initialization here
+	set_pressed(true)
+	pass
+
+func _pressed():
+	get_tree().change_scene(\"res://Scenes/Game.tscn\")"
+
+[node name="Menu" type="Panel"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = -2.0
+margin/top = 0.0
+margin/right = 749.0
+margin/bottom = 1331.0
+custom_styles/panel = SubResource( 2 )
+
+[node name="MenuTitleLabel" type="Label" parent="."]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 257.0
+margin/top = 62.0
+margin/right = 524.0
+margin/bottom = 171.0
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Path"
+uppercase = true
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="GoButton" type="TextureButton" parent="."]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 209.0
+margin/top = 269.0
+margin/right = 559.0
+margin/bottom = 365.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+textures/normal = ExtResource( 2 )
+textures/pressed = ExtResource( 3 )
+params/resize_mode = 1
+params/stretch_mode = 0
+script/script = SubResource( 3 )
+
+[node name="MessageButton" type="TextureButton" parent="."]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 208.0
+margin/top = 402.0
+margin/right = 558.0
+margin/bottom = 498.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+textures/normal = ExtResource( 4 )
+textures/pressed = ExtResource( 5 )
+params/resize_mode = 1
+params/stretch_mode = 0
+
+[node name="ShareButton" type="TextureButton" parent="."]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 207.0
+margin/top = 533.0
+margin/right = 557.0
+margin/bottom = 629.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+textures/normal = ExtResource( 6 )
+textures/pressed = ExtResource( 7 )
+params/resize_mode = 1
+params/stretch_mode = 0
+
+[node name="SoundSwitch" type="CheckButton" parent="."]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 3
+size_flags/vertical = 3
+margin/left = 294.0
+margin/top = 678.0
+margin/right = 461.0
+margin/bottom = 763.0
+custom_icons/off = ExtResource( 8 )
+custom_icons/on = ExtResource( 9 )
+toggle_mode = true
+enabled_focus_mode = 2
+shortcut = null
+flat = true
+align = 0
 
 
