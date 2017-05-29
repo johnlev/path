@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=1]
+[gd_scene load_steps=10 format=1]
 
 [ext_resource path="res://Scenes/Game.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/Bezier.gd" type="Script" id=2]
-[ext_resource path="res://icon.png" type="Texture" id=3]
+[ext_resource path="res://Textures/Block.PNG" type="Texture" id=3]
+[ext_resource path="res://icon.png" type="Texture" id=4]
 
 [sub_resource type="Animation" id=1]
 
@@ -88,7 +89,7 @@ var currentChange
 var inertia
 var canMove
 var gpos
-
+var prev
 func _ready():
 	set_cubic_interpolation(true)
 	set_loop(true)
@@ -96,6 +97,12 @@ func _ready():
 	set_process_input(true)
 	set_fixed_process(true)
 	trueOffset= get_unit_offset()
+	get_node(\"../lead\").set_offset(trueOffset+50)
+	get_node(\"../dot\").set_pos(get_node(\"../lead\").get_global_pos())
+	get_node(\"../lead\").set_offset(trueOffset+100)
+	get_node(\"../dot1\").set_pos(get_node(\"../lead\").get_global_pos())
+	get_node(\"../lead\").set_offset(trueOffset+150)
+	get_node(\"../dot2\").set_pos(get_node(\"../lead\").get_global_pos())
 	maxSpeed= 30
 	currentChange= 0
 	inertia= 0
@@ -114,6 +121,24 @@ func _process(delta):
 	#print(\"I'm processing. Delta= \", delta)
 	currentChange= delta*inertia
 	trueOffset= get_offset()+currentChange
+	var myPos = get_global_pos()
+	var dot=get_node(\"../dot\").get_global_pos()
+	var dot1= get_node(\"../dot1\").get_global_pos()
+	var dot2=get_node(\"../dot2\").get_global_pos()
+	#get_node(\"../lead\").set_offset(trueOffset+50)
+	if (myPos[0]-1<dot[0] and dot[0]<myPos[0]+1 and myPos[1]-1<dot[1] and dot[1]<myPos[1]+1):
+		get_node(\"../lead\").set_offset(trueOffset+150)
+		get_node(\"../dot\").set_pos(get_node(\"../lead\").get_global_pos())
+	if (myPos[0]-1<dot1[0] and dot1[0]<myPos[0]+1 and myPos[1]-1<dot1[1] and dot1[1]<myPos[1]+1):
+		get_node(\"../lead\").set_offset(trueOffset+150)
+		get_node(\"../dot1\").set_pos(get_node(\"../lead\").get_global_pos())
+	if (myPos[0]-1<dot2[0] and dot2[0]<myPos[0]+1 and myPos[1]-1<dot2[1] and dot2[1]<myPos[1]+1):
+		get_node(\"../lead\").set_offset(trueOffset+150)
+		get_node(\"../dot2\").set_pos(get_node(\"../lead\").get_global_pos())
+#	#get_node(\"../lead\").set_offset(trueOffset+100)
+#	get_node(\"../dot1\").set_pos(get_node(\"../lead\").get_global_pos())
+#	get_node(\"../lead\").set_offset(trueOffset+150)
+#	get_node(\"../dot2\").set_pos(get_node(\"../lead\").get_global_pos())
 #	_draw()
 	set_offset(trueOffset)
 	if canMove:
@@ -189,7 +214,30 @@ autoplay = ""
 curve = SubResource( 3 )
 script/script = ExtResource( 2 )
 
-[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+[node name="lead" type="PathFollow2D" parent="Path2D"]
+
+offset = 0.0
+h_offset = 0.0
+v_offset = 0.0
+rotate = true
+cubic_interp = true
+loop = true
+lookahead = 4.0
+
+[node name="dot" type="Sprite" parent="Path2D"]
+
+texture = ExtResource( 3 )
+
+[node name="dot1" type="Sprite" parent="Path2D"]
+
+transform/pos = Vector2( 0, 2 )
+texture = ExtResource( 3 )
+
+[node name="dot2" type="Sprite" parent="Path2D"]
+
+texture = ExtResource( 3 )
+
+[node name="Cursor" type="PathFollow2D" parent="Path2D"]
 
 offset = 0.0
 h_offset = 0.0
@@ -200,31 +248,9 @@ loop = true
 lookahead = 4.0
 script/script = SubResource( 4 )
 
-[node name="Path" type="Sprite" parent="Path2D/PathFollow2D"]
+[node name="Path" type="Sprite" parent="Path2D/Cursor"]
 
-texture = ExtResource( 3 )
-
-[node name="Particles2D" type="Particles2D" parent="Path2D/PathFollow2D"]
-
-config/amount = 32
-config/lifetime = 2.0
-config/process_mode = 1
-params/direction = -90.0
-params/spread = 1.0
-params/linear_velocity = 20.0
-params/spin_velocity = 0.0
-params/orbit_velocity = 0.0
-params/gravity_direction = 0.0
-params/gravity_strength = 0.0
-params/radial_accel = 0.0
-params/tangential_accel = 0.0
-params/damping = 0.0
-params/initial_angle = 0.0
-params/initial_size = 1.0
-params/final_size = 1.0
-params/hue_variation = 0.0
-params/anim_speed_scale = 1.0
-params/anim_initial_pos = 0.0
+texture = ExtResource( 4 )
 
 [node name="Opacity" type="AnimationPlayer" parent="."]
 
@@ -236,3 +262,16 @@ playback/active = true
 playback/speed = 1.0
 blend_times = [  ]
 autoplay = ""
+
+[node name="Music" type="StreamPlayer" parent="."]
+
+stream/stream = null
+stream/play = true
+stream/loop = true
+stream/volume_db = 0.0
+stream/autoplay = false
+stream/paused = false
+stream/loop_restart_time = 0.0
+stream/buffering_ms = 500
+
+
