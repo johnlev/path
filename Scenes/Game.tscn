@@ -205,6 +205,28 @@ script/script = SubResource( 4 )
 
 texture = ExtResource( 3 )
 
+[node name="Particles2D" type="Particles2D" parent="Path2D/PathFollow2D"]
+
+config/amount = 32
+config/lifetime = 2.0
+config/process_mode = 1
+params/direction = -90.0
+params/spread = 1.0
+params/linear_velocity = 20.0
+params/spin_velocity = 0.0
+params/orbit_velocity = 0.0
+params/gravity_direction = 0.0
+params/gravity_strength = 0.0
+params/radial_accel = 0.0
+params/tangential_accel = 0.0
+params/damping = 0.0
+params/initial_angle = 0.0
+params/initial_size = 1.0
+params/final_size = 1.0
+params/hue_variation = 0.0
+params/anim_speed_scale = 1.0
+params/anim_initial_pos = 0.0
+
 [node name="Opacity" type="AnimationPlayer" parent="."]
 
 playback/process_mode = 1
