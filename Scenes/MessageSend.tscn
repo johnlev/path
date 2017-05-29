@@ -1,11 +1,10 @@
-[gd_scene load_steps=17 format=1]
+[gd_scene load_steps=15 format=1]
 
 [ext_resource path="res://Fonts/avenir-next-regular.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://Textures/disclosureIndicator.png" type="Texture" id=2]
-[ext_resource path="res://Textures/disclosureIndicatorSelected.png" type="Texture" id=3]
-[ext_resource path="res://Textures/sendButton.tex" type="Texture" id=4]
-[ext_resource path="res://Textures/sendButtonSelected.tex" type="Texture" id=5]
-[ext_resource path="res://Textures/messageBubble.tex" type="Texture" id=6]
+[ext_resource path="res://Scenes/backButton.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Textures/sendButton.tex" type="Texture" id=3]
+[ext_resource path="res://Textures/sendButtonSelected.tex" type="Texture" id=4]
+[ext_resource path="res://Textures/messageBubble.tex" type="Texture" id=5]
 
 [sub_resource type="StyleBoxFlat" id=1]
 
@@ -26,23 +25,6 @@ font/size = 30
 font/use_mipmaps = false
 font/use_filter = false
 font/font = ExtResource( 1 )
-
-[sub_resource type="GDScript" id=8]
-
-script/source = "extends TextureButton
-
-# class member variables go here, for example:
-# var a = 2
-# var b = \"textvar\"
-
-func _ready():
-	# Called every time the node is added to the scene.
-	# Initialization here
-	set_pressed(true)
-	pass
-
-func _pressed():
-	get_tree().change_scene(\"res://Scenes/Menu.tscn\")"
 
 [sub_resource type="GDScript" id=10]
 
@@ -205,7 +187,7 @@ content_margin/left = -1.0
 content_margin/right = -1.0
 content_margin/top = -1.0
 content_margin/bottom = -1.0
-texture = ExtResource( 6 )
+texture = ExtResource( 5 )
 margin/left = 20.0
 margin/right = 20.0
 margin/top = 20.0
@@ -252,26 +234,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="backButton" type="TextureButton" parent="."]
-
-visibility/opacity = 0.3
-focus/ignore_mouse = false
-focus/stop_mouse = true
-size_flags/horizontal = 2
-size_flags/vertical = 2
-margin/left = 56.0
-margin/top = 126.0
-margin/right = 119.0
-margin/bottom = 220.0
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-textures/normal = ExtResource( 2 )
-textures/pressed = ExtResource( 3 )
-params/resize_mode = 0
-params/scale = Vector2( 0.5, 0.5 )
-params/stretch_mode = 0
-script/script = SubResource( 8 )
+[node name="backButton" parent="." instance=ExtResource( 2 )]
 
 [node name="Network Controller" type="Node" parent="."]
 
@@ -290,8 +253,8 @@ margin/bottom = 600.0
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
-textures/normal = ExtResource( 4 )
-textures/pressed = ExtResource( 5 )
+textures/normal = ExtResource( 3 )
+textures/pressed = ExtResource( 4 )
 params/resize_mode = 0
 params/stretch_mode = 0
 script/script = SubResource( 9 )
