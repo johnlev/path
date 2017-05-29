@@ -1,11 +1,11 @@
 [gd_scene load_steps=17 format=1]
 
 [ext_resource path="res://Fonts/avenir-next-regular.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://Textures/messageBubble.tex" type="Texture" id=2]
-[ext_resource path="res://Textures/sendButton.tex" type="Texture" id=3]
-[ext_resource path="res://Textures/sendButtonSelected.tex" type="Texture" id=4]
-[ext_resource path="res://Textures/disclosureIndicator.png" type="Texture" id=5]
-[ext_resource path="res://Textures/disclosureIndicatorSelected.png" type="Texture" id=6]
+[ext_resource path="res://Textures/disclosureIndicator.png" type="Texture" id=2]
+[ext_resource path="res://Textures/disclosureIndicatorSelected.png" type="Texture" id=3]
+[ext_resource path="res://Textures/sendButton.tex" type="Texture" id=4]
+[ext_resource path="res://Textures/sendButtonSelected.tex" type="Texture" id=5]
+[ext_resource path="res://Textures/messageBubble.tex" type="Texture" id=6]
 
 [sub_resource type="StyleBoxFlat" id=1]
 
@@ -20,9 +20,33 @@ border_size = 0
 border_blend = true
 draw_bg = true
 
+[sub_resource type="DynamicFont" id=7]
+
+font/size = 30
+font/use_mipmaps = false
+font/use_filter = false
+font/font = ExtResource( 1 )
+
+[sub_resource type="GDScript" id=8]
+
+script/source = "extends TextureButton
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+
+func _ready():
+	# Called every time the node is added to the scene.
+	# Initialization here
+	set_pressed(true)
+	pass
+
+func _pressed():
+	get_tree().change_scene(\"res://Scenes/Menu.tscn\")"
+
 [sub_resource type="GDScript" id=10]
 
-script/source = "extends Panel
+script/source = "extends Node
 
 # class member variables go here, for example:
 # var a = 2
@@ -38,11 +62,16 @@ func _ready():
 	pass
 
 func _send():
+	print(\"Got pressed\")
 	if(t.is_active()):
+		print(\"Active :(\")
 		return
-	t.start(self,\"_load\")
+	var messageEdit = get_node(\"messageEdit\");
+	var toEdit = get_node(\"toEdit\");
+	print(t.start(self,\"_load\", {\"quote\": messageEdit.get_text(), \"toUser\": toEdit.get_text()}) == OK)
 
-func _load():
+func _load(userdata):
+	print(\"loading...\")
 	var err=0
 	var http = HTTPClient.new() # Create the Client
 	
@@ -60,11 +89,14 @@ func _load():
 	# Some headers
 
 	var headers=[
-		\"User-Agent: Pirulo/1.0 (Godot)\",
-		\"Accept: */*\"
+		\"Accept: */*\",
+		\"Content-Type: application/json\"
 	]
 
-	err = http.request(HTTPClient.METHOD_POST,\"/quote/send\",headers,'{\"quote\": \"Be free!\", \"toUser\": \"john\"}') # Request a page from the site (this one was chunked..)
+	err = http.request(HTTPClient.METHOD_POST,
+		\"/quote/send\",
+		headers,
+		'{\"quote\": \"' + userdata.quote + '\", \"toUser\": \"' + userdata.toUser + '\"}') # Request a page from the site (this one was chunked..)
 
 	assert( err == OK ) # Make sure all is OK
 
@@ -118,6 +150,28 @@ func _load():
 		var text = rb.get_string_from_ascii()
 		print(\"Text: \",text)"
 
+[sub_resource type="GDScript" id=9]
+
+script/source = "extends TextureButton
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+
+func _init():
+	add_user_signal(\"pressed\")
+	pass
+	
+
+func _ready():
+	# Called every time the node is added to the scene.
+	# Initialization here
+	set_pressed(true)
+	pass
+
+func _pressed():
+	emit_signal(\"pressed\")"
+
 [sub_resource type="StyleBoxFlat" id=2]
 
 content_margin/left = -1.0
@@ -151,7 +205,7 @@ content_margin/left = -1.0
 content_margin/right = -1.0
 content_margin/top = -1.0
 content_margin/bottom = -1.0
-texture = ExtResource( 2 )
+texture = ExtResource( 6 )
 margin/left = 20.0
 margin/right = 20.0
 margin/top = 20.0
@@ -169,52 +223,6 @@ font/use_mipmaps = false
 font/use_filter = false
 font/font = ExtResource( 1 )
 
-[sub_resource type="GDScript" id=9]
-
-script/source = "extends TextureButton
-
-# class member variables go here, for example:
-# var a = 2
-# var b = \"textvar\"
-
-func _init():
-	add_user_signal(\"pressed\")
-	pass
-	
-
-func _ready():
-	# Called every time the node is added to the scene.
-	# Initialization here
-	set_pressed(true)
-	pass
-
-func _pressed():
-	emit_signal(\"pressed\")"
-
-[sub_resource type="DynamicFont" id=7]
-
-font/size = 30
-font/use_mipmaps = false
-font/use_filter = false
-font/font = ExtResource( 1 )
-
-[sub_resource type="GDScript" id=8]
-
-script/source = "extends TextureButton
-
-# class member variables go here, for example:
-# var a = 2
-# var b = \"textvar\"
-
-func _ready():
-	# Called every time the node is added to the scene.
-	# Initialization here
-	set_pressed(true)
-	pass
-
-func _pressed():
-	get_tree().change_scene(\"res://Scenes/Menu.tscn\")"
-
 [node name="MessageSend" type="Panel"]
 
 focus/ignore_mouse = false
@@ -226,68 +234,6 @@ margin/top = 0.0
 margin/right = 760.0
 margin/bottom = 1144.0
 custom_styles/panel = SubResource( 1 )
-script/script = SubResource( 10 )
-
-[node name="toEdit" type="LineEdit" parent="."]
-
-focus/ignore_mouse = false
-focus/stop_mouse = true
-size_flags/horizontal = 2
-size_flags/vertical = 2
-margin/left = 225.0
-margin/top = 152.0
-margin/right = 568.0
-margin/bottom = 191.0
-custom_styles/normal = SubResource( 2 )
-custom_fonts/font = SubResource( 3 )
-custom_colors/font_color = Color( 0.149536, 0.447954, 0.765625, 1 )
-text = "john"
-placeholder/alpha = 0.6
-align = 1
-focus_mode = 2
-caret/caret_blink = false
-caret/caret_blink_speed = 0.65
-
-[node name="messageEdit" type="TextEdit" parent="."]
-
-focus/ignore_mouse = false
-focus/stop_mouse = true
-size_flags/horizontal = 2
-size_flags/vertical = 2
-margin/left = 167.0
-margin/top = 248.0
-margin/right = 589.0
-margin/bottom = 496.0
-custom_styles/focus = SubResource( 4 )
-custom_styles/normal = SubResource( 5 )
-custom_fonts/font = SubResource( 6 )
-custom_colors/font_color = Color( 0.384521, 0.600815, 0.878906, 1 )
-custom_colors/current_line_color = Color( 0, 0, 0, 0 )
-syntax_highlighting = false
-show_line_numbers = false
-highlight_all_occurrences = false
-caret/block_caret = true
-caret/caret_blink = true
-caret/caret_blink_speed = 0.65
-
-[node name="SendButton" type="TextureButton" parent="."]
-
-focus/ignore_mouse = false
-focus/stop_mouse = true
-size_flags/horizontal = 2
-size_flags/vertical = 2
-margin/left = 294.0
-margin/top = 554.0
-margin/right = 492.0
-margin/bottom = 600.0
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-textures/normal = ExtResource( 3 )
-textures/pressed = ExtResource( 4 )
-params/resize_mode = 0
-params/stretch_mode = 0
-script/script = SubResource( 9 )
 
 [node name="toLabel" type="Label" parent="."]
 
@@ -320,11 +266,76 @@ margin/bottom = 220.0
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
-textures/normal = ExtResource( 5 )
-textures/pressed = ExtResource( 6 )
+textures/normal = ExtResource( 2 )
+textures/pressed = ExtResource( 3 )
 params/resize_mode = 0
 params/scale = Vector2( 0.5, 0.5 )
 params/stretch_mode = 0
 script/script = SubResource( 8 )
+
+[node name="Network Controller" type="Node" parent="."]
+
+script/script = SubResource( 10 )
+
+[node name="SendButton" type="TextureButton" parent="Network Controller"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 292.0
+margin/top = 554.0
+margin/right = 490.0
+margin/bottom = 600.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+textures/normal = ExtResource( 4 )
+textures/pressed = ExtResource( 5 )
+params/resize_mode = 0
+params/stretch_mode = 0
+script/script = SubResource( 9 )
+
+[node name="toEdit" type="LineEdit" parent="Network Controller"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 223.0
+margin/top = 152.0
+margin/right = 566.0
+margin/bottom = 191.0
+custom_styles/normal = SubResource( 2 )
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color = Color( 0.149536, 0.447954, 0.765625, 1 )
+text = "john"
+placeholder/alpha = 0.6
+align = 1
+focus_mode = 2
+caret/caret_blink = false
+caret/caret_blink_speed = 0.65
+
+[node name="messageEdit" type="TextEdit" parent="Network Controller"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 165.0
+margin/top = 248.0
+margin/right = 587.0
+margin/bottom = 496.0
+custom_styles/focus = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
+custom_fonts/font = SubResource( 6 )
+custom_colors/font_color = Color( 0.384521, 0.600815, 0.878906, 1 )
+custom_colors/current_line_color = Color( 0, 0, 0, 0 )
+syntax_highlighting = false
+show_line_numbers = false
+highlight_all_occurrences = false
+caret/block_caret = true
+caret/caret_blink = true
+caret/caret_blink_speed = 0.65
 
 
