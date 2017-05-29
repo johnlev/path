@@ -3,7 +3,7 @@
 [ext_resource path="res://Textures/disclosureIndicator.png" type="Texture" id=1]
 [ext_resource path="res://Textures/disclosureIndicatorSelected.png" type="Texture" id=2]
 
-[sub_resource type="GDScript" id=8]
+[sub_resource type="GDScript" id=1]
 
 script/source = "extends TextureButton
 
@@ -11,13 +11,21 @@ script/source = "extends TextureButton
 # var a = 2
 # var b = \"textvar\"
 
+var autoReturn = true
+
 func _ready():
 	# Called every time the node is added to the scene.
 	# Initialization here
+	add_user_signal(\"pressed\")
 	set_pressed(true)
 	pass
 
 func _pressed():
+	emit_signal(\"pressed\")
+	if (autoReturn):
+		get_tree().change_scene(\"res://Scenes/Menu.tscn\")
+
+func complete_back():
 	get_tree().change_scene(\"res://Scenes/Menu.tscn\")"
 
 [node name="backButton" type="TextureButton"]
@@ -39,6 +47,6 @@ textures/pressed = ExtResource( 2 )
 params/resize_mode = 0
 params/scale = Vector2( 0.5, 0.5 )
 params/stretch_mode = 0
-script/script = SubResource( 8 )
+script/script = SubResource( 1 )
 
 

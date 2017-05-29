@@ -99,6 +99,7 @@ func _load(userdata):
 
 		var headers = http.get_response_headers_as_dictionary() # Get response headers
 		print(\"code: \",http.get_response_code()) # Show response code
+		
 		print(\"**headers:\\\\n\",headers) # Show headers
 
 		# Getting the HTTP Body
@@ -130,7 +131,8 @@ func _load(userdata):
 
 		print(\"bytes got: \",rb.size())
 		var text = rb.get_string_from_ascii()
-		print(\"Text: \",text)"
+		print(\"Text: \",text)
+	get_tree().change_scene(\"res://Scenes/Menu.tscn\")"
 
 [sub_resource type="GDScript" id=9]
 
