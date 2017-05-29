@@ -65,16 +65,21 @@ func _ready():
 	set_loop(true)
 	set_process(true)
 	set_process_input(true)
+	set_fixed_process(true)	
 	trueOffset= get_unit_offset()
 	maxSpeed= 30
 	currentChange= 0
 	inertia= 0
 	canMove= true
 
-func _input(event):
-	#the following if-statement must be an actual test to determnie whether the event is what we want
-	if true:
-		canMove= true
+func _fixed_process(delta):
+	var pos = get_global_mouse_pos()
+	var myPos = get_global_pos()
+	canMove = (pos.x >= myPos.x - 20
+		and pos.y >= myPos.y - 20
+		and pos.x <= myPos.x + 20
+		and pos.y <= myPos.y + 20
+		and Input.is_mouse_button_pressed(BUTTON_LEFT))
 
 func _process(delta):
 	#print(\"I'm processing. Delta= \", delta)
@@ -83,7 +88,6 @@ func _process(delta):
 	_draw()
 	set_offset(trueOffset)
 	if canMove:
-		canMove= false
 		if inertia< maxSpeed:
 			inertia+= 1
 	else:
