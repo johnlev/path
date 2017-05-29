@@ -7,7 +7,7 @@ extends Node2D
 func _ready():
 	randomize()
 #	get_node("Silk").set_process(false)
-	var backId=randi()%5
+	var backId=1#=randi()%5
 	print(backId)
 	if (backId==0):
 		get_node("Background").set_texture(load("res://Textures/PlainBackground/constellation.png"))
@@ -15,9 +15,11 @@ func _ready():
 	if (backId==1):
 		get_node("Background").set_texture(load("res://Textures/PlainBackground/meadows.png"))
 		get_node("Background").translate(Vector2(375,667))
+		get_node("Opacity").play("Breathe")
 	if (backId==2):
 		get_node("Background").set_texture(load("res://Textures/PlainBackground/Black.png"))
 		get_node("Background").translate(Vector2(375,667))
+		get_node("Opacity").play("Breathe")
 	if (backId==3):
 		get_node("Background").set_texture(load("res://Textures/PlainBackground/Clouds.png"))
 		get_node("Background").translate(Vector2(375,667))

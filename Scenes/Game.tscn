@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=1]
+[gd_scene load_steps=9 format=1]
 
 [ext_resource path="res://Scenes/Game.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/Bezier.gd" type="Script" id=2]
+[ext_resource path="res://icon.png" type="Texture" id=3]
 
 [sub_resource type="Animation" id=1]
 
@@ -40,7 +41,7 @@ tracks/2/keys = {
 "values": [ 0, 255 ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=2]
 
 resource/name = "Breathe"
 length = 6.0
@@ -67,14 +68,14 @@ tracks/1/keys = {
 "values": [ Vector2( 0, 0 ), Vector2( -25, 0 ), Vector2( 0, 0 ) ]
 }
 
-[sub_resource type="Curve2D" id=2]
+[sub_resource type="Curve2D" id=3]
 
 bake_interval = 5.0
 _data = {
 "points": Vector2Array(  )
 }
 
-[sub_resource type="GDScript" id=3]
+[sub_resource type="GDScript" id=4]
 
 script/source = "extends PathFollow2D
 
@@ -86,6 +87,7 @@ var maxSpeed
 var currentChange
 var inertia
 var canMove
+var gpos
 
 func _ready():
 	set_cubic_interpolation(true)
@@ -100,33 +102,57 @@ func _ready():
 
 func _input(event):
 	#the following if-statement must be an actual test to determnie whether the event is what we want
-	if true:
-		canMove= true
-
+	if (event.type==InputEvent.MOUSE_MOTION):
+		gpos = get_node(\"Path\").get_global_pos()
+		if (gpos[0]-50<event.x && event.x<gpos[0]+50 && gpos[1]-50<event.y && event.y <gpos[1]+50):
+			canMove=true
+		elif(event.type==InputEvent.MOUSE_MOTION):
+			canMove=false
+#	if event.is_action_released(InputEvent.SCREEN_TOUCH):
+#		canMove=false
+		
 func _process(delta):
 	#print(\"I'm processing. Delta= \", delta)
 	currentChange= delta*inertia
 	trueOffset= get_offset()+currentChange
-	_draw()
+#	_draw()
 	set_offset(trueOffset)
 	if canMove:
-		canMove= false
 		if inertia< maxSpeed:
 			inertia+= 1
 	else:
 		inertia-= 1
 		if inertia<0:
 			inertia= 0
+#
+#func _draw():
+#	draw_circle(Vector2(0, 0), 20, Color(0, 0, 0))
+#	#draw_circle(Vector2(0, 0), 20, Color(255, 255, 255))"
 
-func _draw():
-	draw_circle(Vector2(0, 0), 20, Color(0, 0, 0))
-	#draw_circle(Vector2(0, 0), 20, Color(255, 255, 255))"
+[sub_resource type="Animation" id=5]
+
+resource/name = "Breathe"
+length = 8.0
+loop = true
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Background:visibility/opacity")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 2, 6, 8 ),
+"transitions": FloatArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 1.0, 0.5, 0.5, 1.0 ]
+}
 
 [node name="Node2D" type="Node2D"]
 
 script/script = ExtResource( 1 )
 
 [node name="Background" type="Sprite" parent="."]
+
+visibility/opacity = 0.5
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 
@@ -153,7 +179,7 @@ autoplay = "Silk"
 playback/process_mode = 1
 playback/default_blend_time = 0.0
 root/root = NodePath("..")
-anims/Breathe = SubResource( 4 )
+anims/Breathe = SubResource( 2 )
 playback/active = true
 playback/speed = 1.0
 blend_times = [  ]
@@ -161,7 +187,7 @@ autoplay = ""
 
 [node name="Path2D" type="Path2D" parent="."]
 
-curve = SubResource( 2 )
+curve = SubResource( 3 )
 script/script = ExtResource( 2 )
 
 [node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
@@ -173,6 +199,21 @@ rotate = true
 cubic_interp = true
 loop = true
 lookahead = 4.0
-script/script = SubResource( 3 )
+script/script = SubResource( 4 )
+
+[node name="Path" type="Sprite" parent="Path2D/PathFollow2D"]
+
+texture = ExtResource( 3 )
+
+[node name="Opacity" type="AnimationPlayer" parent="."]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Breathe = SubResource( 5 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = ""
 
 
