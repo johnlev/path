@@ -10,27 +10,27 @@
 [ext_resource path="res://Textures/soundOff.png" type="Texture" id=8]
 [ext_resource path="res://Textures/soundOn.png" type="Texture" id=9]
 
-[sub_resource type="StyleBoxFlat" id=2]
+[sub_resource type="StyleBoxFlat" id=1]
 
 content_margin/left = -1.0
 content_margin/right = -1.0
 content_margin/top = -1.0
 content_margin/bottom = -1.0
 bg_color = Color( 0.847059, 0.929412, 0.952941, 1 )
-light_color = Color( 0.8, 0.8, 0.8, 0 )
-dark_color = Color( 0.8, 0.8, 0.8, 0 )
+light_color = Color( 0.8, 0.8, 0.8, 1 )
+dark_color = Color( 0.8, 0.8, 0.8, 1 )
 border_size = 0
 border_blend = true
 draw_bg = true
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="DynamicFont" id=3]
 
 font/size = 100
 font/use_mipmaps = false
 font/use_filter = false
 font/font = ExtResource( 1 )
 
-[sub_resource type="GDScript" id=3]
+[sub_resource type="GDScript" id=2]
 
 script/source = "extends TextureButton
 
@@ -65,13 +65,14 @@ focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 0
-margin/left = 257.0
-margin/top = 62.0
-margin/right = 524.0
-margin/bottom = 171.0
-custom_fonts/font = SubResource( 2 )
+margin/left = 191.0
+margin/top = 75.0
+margin/right = 576.0
+margin/bottom = 232.0
+custom_fonts/font = SubResource( 3 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Path"
+align = 1
 uppercase = true
 percent_visible = 1.0
 lines_skipped = 0
@@ -94,7 +95,7 @@ textures/normal = ExtResource( 2 )
 textures/pressed = ExtResource( 3 )
 params/resize_mode = 1
 params/stretch_mode = 0
-script/script = SubResource( 3 )
+script/script = SubResource( 2 )
 
 [node name="MessageButton" type="TextureButton" parent="."]
 

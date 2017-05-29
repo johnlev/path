@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=1]
+
+[sub_resource type="StyleBoxFlat" id=1]
+
+content_margin/left = -1.0
+content_margin/right = -1.0
+content_margin/top = -1.0
+content_margin/bottom = -1.0
+bg_color = Color( 0.847059, 0.929412, 0.952941, 1 )
+light_color = Color( 0.8, 0.8, 0.8, 1 )
+dark_color = Color( 0.8, 0.8, 0.8, 1 )
+border_size = 0
+border_blend = true
+draw_bg = true
+
+[node name="MessageGet" type="Panel"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = -8.0
+margin/top = 0.0
+margin/right = 754.0
+margin/bottom = 1144.0
+custom_styles/panel = SubResource( 1 )
+
+
