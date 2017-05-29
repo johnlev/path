@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=1]
+[gd_scene load_steps=7 format=1]
 
 [ext_resource path="res://Scenes/Game.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/Bezier.gd" type="Script" id=2]
@@ -38,6 +38,33 @@ tracks/2/keys = {
 "transitions": FloatArray( 1, 1 ),
 "update": 0,
 "values": [ 0, 255 ]
+}
+
+[sub_resource type="Animation" id=4]
+
+resource/name = "Breathe"
+length = 6.0
+loop = true
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Breath2:offset")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 3, 6 ),
+"transitions": FloatArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 25, 0 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Breath:offset")
+tracks/1/interp = 1
+tracks/1/imported = false
+tracks/1/keys = {
+"times": FloatArray( 0, 3, 6 ),
+"transitions": FloatArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( -25, 0 ), Vector2( 0, 0 ) ]
 }
 
 [sub_resource type="Curve2D" id=2]
@@ -106,7 +133,7 @@ script/script = ExtResource( 1 )
 transform/pos = Vector2( 375, 667 )
 animation = "default"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="Movement" type="AnimationPlayer" parent="."]
 
 playback/process_mode = 1
 playback/default_blend_time = 0.0
@@ -116,6 +143,21 @@ playback/active = true
 playback/speed = 1.0
 blend_times = [  ]
 autoplay = "Silk"
+
+[node name="Breath" type="Sprite" parent="."]
+
+[node name="Breath2" type="Sprite" parent="."]
+
+[node name="Breathing" type="AnimationPlayer" parent="."]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Breathe = SubResource( 4 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = ""
 
 [node name="Path2D" type="Path2D" parent="."]
 
