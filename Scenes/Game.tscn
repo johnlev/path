@@ -220,6 +220,7 @@ script/script = SubResource( 4 )
 
 [node name="Path" type="Sprite" parent="Path2D/PathFollow2D"]
 
+transform/scale = Vector2( 0.8, 0.8 )
 texture = ExtResource( 3 )
 script/script = SubResource( 5 )
 
