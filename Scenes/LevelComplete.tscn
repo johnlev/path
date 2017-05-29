@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=1]
+[gd_scene load_steps=8 format=1]
 
-[ext_resource path="res://Scenes/backButton.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Fonts/avenir-next-regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://Fonts/avenir-next-regular.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Textures/forwardButton.png" type="Texture" id=2]
+[ext_resource path="res://Textures/forwardButtonSelected.png" type="Texture" id=3]
 
-[sub_resource type="GDScript" id=1]
+[sub_resource type="GDScript" id=4]
 
 script/source = "extends Node
 
@@ -11,22 +12,35 @@ script/source = "extends Node
 # var a = 2
 # var b = \"textvar\"
 
-var t = Thread.new()
+var titleLabel = null
+var quotesLabel = null
+var forwardButton = null
+var stopped = false
+var t = null
+var quotes = []
 
 func _ready():
 	# Called every time the node is added to the scene.
 	# Initialization here
-	var backButton = get_node(\"User/backButton\")
-	backButton.connect(\"pressed\", self, \"_backPressed\")
-	backButton.autoReturn = false
+	titleLabel = get_node(\"Panel/Title label\")
+	quotesLabel = get_node(\"Panel/Quotes label\")
+	quotesLabel.set_text(\"Loading...\")
+	forwardButton = get_node(\"Panel/Forward button\")
+	forwardButton.connect(\"pressed\", self, \"forwardPressed\")
+	start_loading()
 	pass
 
-func _backPressed():
-	if (t.is_active()):
-		return
-	t.start(self, \"_load\", get_node(\"User/usernameEdit\").get_text())
+func forwardPressed():
+	stopped = true
+	t.wait_to_finish()
+	get_tree().change_scene(\"res://Scenes/Menu.tscn\")
 
-func _load(usernameText):
+func start_loading():
+	t = Thread.new()
+	t.start(self, \"_load_a_message\", {\"username\": \"john\", \"thread\": t})
+
+func _load_a_message(params):
+	var username = params.username
 	print(\"loading...\")
 	var err=0
 	var http = HTTPClient.new() # Create the Client
@@ -46,13 +60,9 @@ func _load(usernameText):
 
 	var headers=[
 		\"Accept: */*\",
-		\"Content-Type: application/json\"
 	]
 
-	err = http.request(HTTPClient.METHOD_POST,
-		\"/user/submit\",
-		headers,
-		'{\"username\": \"' + usernameText + '\"}') # Request a page from the site (this one was chunked..)
+	err = http.request(HTTPClient.METHOD_GET, \"/quote?username=\" + username, headers) # Request a page from the site (this one was chunked..)
 
 	assert( err == OK ) # Make sure all is OK
 
@@ -105,9 +115,26 @@ func _load(usernameText):
 		print(\"bytes got: \",rb.size())
 		var text = rb.get_string_from_ascii()
 		print(\"Text: \",text)
-	get_tree().change_scene(\"res://Scenes/Menu.tscn\")"
+		quotes.append(text)
+		call_deferred(\"_update_quotes\", params.thread)
 
-[sub_resource type="StyleBoxFlat" id=2]
+func _update_quotes(t):
+	var r = t.wait_to_finish()
+	if (quotes.size() < 3 and !stopped):
+		self.start_loading()
+	
+	var text = \"\"
+	for i in range(quotes.size()):
+		var quote = quotes[i];
+		var wrapped = \"\"
+		for i in range(quote.length()):
+			if (i % 40 == 0 and i != 0):
+				wrapped += \"\\n\"
+			wrapped += quote[i]
+		text += wrapped + \"\\n\\n\"
+	quotesLabel.set_text(text)"
+
+[sub_resource type="StyleBoxFlat" id=1]
 
 content_margin/left = -1.0
 content_margin/right = -1.0
@@ -122,116 +149,89 @@ draw_bg = true
 
 [sub_resource type="DynamicFont" id=3]
 
-font/size = 50
+font/size = 35
 font/use_mipmaps = false
 font/use_filter = false
-font/font = ExtResource( 2 )
+font/font = ExtResource( 1 )
 
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="DynamicFont" id=2]
 
-font/size = 30
-font/use_mipmaps = false
+font/size = 70
+font/use_mipmaps = true
 font/use_filter = false
-font/font = ExtResource( 2 )
+font/font = ExtResource( 1 )
 
-[sub_resource type="StyleBoxFlat" id=5]
+[node name="Server Comunicator" type="Node"]
 
-content_margin/left = -1.0
-content_margin/right = -1.0
-content_margin/top = -1.0
-content_margin/bottom = -1.0
-bg_color = Color( 0.6, 0.6, 0.6, 1 )
-light_color = Color( 0.8, 0.8, 0.8, 1 )
-dark_color = Color( 0.8, 0.8, 0.8, 1 )
-border_size = 0
-border_blend = true
-draw_bg = true
+script/script = SubResource( 4 )
 
-[sub_resource type="DynamicFont" id=6]
-
-font/size = 30
-font/use_mipmaps = false
-font/use_filter = false
-font/font = ExtResource( 2 )
-
-[node name="Network Control" type="Node"]
-
-script/script = SubResource( 1 )
-
-[node name="User" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="."]
 
 focus/ignore_mouse = false
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 2
-margin/left = -7.0
-margin/top = -8.0
-margin/right = 762.0
-margin/bottom = 1375.0
-custom_styles/panel = SubResource( 2 )
+margin/left = -22.0
+margin/top = -22.0
+margin/right = 761.0
+margin/bottom = 1388.0
+custom_styles/panel = SubResource( 1 )
 
-[node name="backButton" parent="User" instance=ExtResource( 1 )]
-
-margin/left = 62.0
-margin/top = 151.0
-margin/right = 125.0
-margin/bottom = 245.0
-
-[node name="Label" type="Label" parent="User"]
+[node name="Quotes label" type="Label" parent="Panel"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 0
-margin/left = 194.0
-margin/top = 134.0
-margin/right = 564.0
-margin/bottom = 193.0
+margin/left = 61.0
+margin/top = 285.0
+margin/right = 724.0
+margin/bottom = 1347.0
 custom_fonts/font = SubResource( 3 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "Your Username:"
+text = "Quote1
+Quote2
+Quote3
+Quote4
+Quote5
+"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="DescriptionLabel" type="Label" parent="User"]
+[node name="Title label" type="Label" parent="Panel"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 0
-margin/left = 95.0
-margin/top = 307.0
-margin/right = 688.0
-margin/bottom = 428.0
-custom_fonts/font = SubResource( 4 )
+margin/left = 140.0
+margin/top = 112.0
+margin/right = 646.0
+margin/bottom = 195.0
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "Share the username 'john' with your friends
-so they can send you messages"
-align = 1
+text = "Level Complete"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="usernameEdit" type="LineEdit" parent="User"]
+[node name="Forward button" type="TextureButton" parent="Panel"]
 
 focus/ignore_mouse = false
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 2
-margin/left = 246.0
-margin/top = 226.0
-margin/right = 511.0
-margin/bottom = 271.0
-custom_styles/normal = SubResource( 5 )
-custom_fonts/font = SubResource( 6 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "john"
-placeholder/alpha = 0.6
-align = 1
-max_length = 18
-focus_mode = 2
-caret/caret_blink = false
-caret/caret_blink_speed = 0.65
+margin/left = 681.0
+margin/top = 102.0
+margin/right = 742.0
+margin/bottom = 196.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+textures/normal = ExtResource( 2 )
+textures/pressed = ExtResource( 3 )
+params/resize_mode = 0
+params/stretch_mode = 0
 
 
