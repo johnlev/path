@@ -227,6 +227,9 @@ func _process(delta):
 		inertia-= 1
 		if inertia<0:
 			inertia= 0
+	
+	if get_unit_offset()>= 1.0:
+		get_tree().change_scene(\"res://Scenes/LevelComplete.tscn\")
 #
 #func _draw():
 #	draw_circle(Vector2(0, 0), 20, Color(0, 0, 0))
@@ -408,7 +411,7 @@ params/linear_velocity = 20.0
 params/spin_velocity = 0.0
 params/orbit_velocity = 0.0
 params/gravity_direction = 0.0
-params/gravity_strength = 5.0
+params/gravity_strength = 0.0
 params/radial_accel = 0.0
 params/tangential_accel = 0.0
 params/damping = 0.0
