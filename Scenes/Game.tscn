@@ -1,7 +1,9 @@
-[gd_scene load_steps=11 format=1]
+[gd_scene load_steps=13 format=1]
 
 [ext_resource path="res://Scenes/Game.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/Bezier.gd" type="Script" id=2]
+[ext_resource path="res://Textures/whiteGear.png" type="Texture" id=3]
+[ext_resource path="res://Scripts/button.gd" type="Script" id=4]
 
 [sub_resource type="Animation" id=1]
 
@@ -132,6 +134,7 @@ script/source = "extends PathFollow2D
 # class member variables go here, for example:
 # var a = 2
 # var b = \"textvar\"
+var i=0
 var trueOffset
 var maxSpeed
 var currentChange
@@ -174,8 +177,17 @@ func _fixed_process(delta):
 	var op= get_node(\"../../Background\").get_opacity()
 	if (canMove && op< 1.20):
 		get_node(\"../../Background\").set_opacity(op+.002)
-	elif(op>0):
+	elif(op>0&&!canMove):
 		get_node(\"../../Background\").set_opacity(op-.01)
+		get_node(\"Path/Particles2D\").set_emitting(false)
+		if (get_node(\"Path/Particles2D\").get_amount()>0):
+			get_node(\"Path/Particles2D\").set_amount(get_node(\"Path/Particles2D\").get_amount()-1)
+	if (canMove):
+		i+=1
+		get_node(\"Path/Particles2D\").set_emitting(true)
+		if (get_node(\"Path/Particles2D\").get_amount()<35&&i%30==0):
+			i=0
+			get_node(\"Path/Particles2D\").set_amount(get_node(\"Path/Particles2D\").get_amount()+1)
 func _process(delta):
 	#print(\"I'm processing. Delta= \", delta)
 	currentChange= delta*inertia
@@ -398,12 +410,14 @@ script/script = SubResource( 7 )
 [node name="Particles2D" type="Particles2D" parent="Path2D/Cursor/Path"]
 
 visibility/behind_parent = true
-config/amount = 32
-config/lifetime = 4.0
-config/time_scale = 4.0
+z/relative = false
+config/amount = 0
+config/lifetime = 3.0
+config/time_scale = 6.0
+config/emitting = false
 config/process_mode = 1
 params/direction = -90.0
-params/spread = 20.0
+params/spread = 30.0
 params/linear_velocity = 20.0
 params/spin_velocity = 0.0
 params/orbit_velocity = 0.0
@@ -413,7 +427,7 @@ params/radial_accel = 0.0
 params/tangential_accel = 0.0
 params/damping = 0.0
 params/initial_angle = 0.0
-params/initial_size = 4.0
+params/initial_size = 6.0
 params/final_size = 1.0
 params/hue_variation = 0.0
 params/anim_speed_scale = 1.0
@@ -440,5 +454,23 @@ stream/autoplay = false
 stream/paused = false
 stream/loop_restart_time = 0.0
 stream/buffering_ms = 500
+
+[node name="Button" type="Button" parent="."]
+
+rect/scale = Vector2( 0.1, 0.1 )
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 695.0
+margin/top = 10.0
+margin/right = 1208.0
+margin/bottom = 517.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+icon = ExtResource( 3 )
+flat = true
+script/script = ExtResource( 4 )
 
 
