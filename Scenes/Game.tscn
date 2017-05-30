@@ -177,7 +177,7 @@ func _fixed_process(delta):
 	var op= get_node(\"../../Background\").get_opacity()
 	if (canMove && op< 1.20):
 		get_node(\"../../Background\").set_opacity(op+.002)
-	elif(op>0&&!canMove):
+	elif(op>0.3&&!canMove):
 		get_node(\"../../Background\").set_opacity(op-.01)
 		get_node(\"Path/Particles2D\").set_emitting(false)
 		if (get_node(\"Path/Particles2D\").get_amount()>0):
