@@ -1,0 +1,477 @@
+<<<<<<< HEAD
+[gd_scene load_steps=10 format=1]
+=======
+[gd_scene load_steps=12 format=1]
+>>>>>>> db05ffee4eab3242b4fdde68ddf3b0f20d378f98
+
+[ext_resource path="res://Scenes/Game.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/Bezier.gd" type="Script" id=2]
+[ext_resource path="res://Textures/soft circle.png" type="Texture" id=3]
+
+[sub_resource type="Animation" id=1]
+
+resource/name = "Silk"
+length = 5.0
+loop = true
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("AnimatedSprite:transform/pos")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0 ),
+"transitions": FloatArray( 1 ),
+"update": 0,
+"values": [ Vector2( 375, 667 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("AnimatedSprite:transform/rot")
+tracks/1/interp = 1
+tracks/1/imported = false
+tracks/1/keys = {
+"times": FloatArray( 0 ),
+"transitions": FloatArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("AnimatedSprite:frame")
+tracks/2/interp = 1
+tracks/2/imported = false
+tracks/2/keys = {
+"times": FloatArray( 0, 5 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 0,
+"values": [ 0, 255 ]
+}
+
+[sub_resource type="Animation" id=2]
+
+resource/name = "Breathe"
+length = 6.0
+loop = true
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Breath2:offset")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 3, 6 ),
+"transitions": FloatArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 25, 0 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Breath:offset")
+tracks/1/interp = 1
+tracks/1/imported = false
+tracks/1/keys = {
+"times": FloatArray( 0, 3, 6 ),
+"transitions": FloatArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( -25, 0 ), Vector2( 0, 0 ) ]
+}
+
+[sub_resource type="Curve2D" id=3]
+
+bake_interval = 5.0
+_data = {
+"points": Vector2Array(  )
+}
+
+[sub_resource type="Animation" id=4]
+
+resource/name = "Appe"
+length = 1.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:visibility/opacity")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 1 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=7]
+
+resource/name = "Appe"
+length = 1.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:visibility/opacity")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 1 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=8]
+
+resource/name = "Appe"
+length = 1.0
+loop = false
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:visibility/opacity")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 1 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="GDScript" id=5]
+
+script/source = "extends PathFollow2D
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+var trueOffset
+var maxSpeed
+var currentChange
+var inertia
+var canMove
+var gpos
+var prev
+func _ready():
+	set_cubic_interpolation(true)
+	set_loop(true)
+	set_process(true)
+	set_process_input(true)
+	set_fixed_process(true)
+	trueOffset= get_unit_offset()
+	get_node(\"../lead\").set_offset(trueOffset+30)
+	get_node(\"../dot\").set_pos(get_node(\"../lead\").get_global_pos())
+	get_node(\"../lead\").set_offset(trueOffset+60)
+	get_node(\"../dot1\").set_pos(get_node(\"../lead\").get_global_pos())
+	get_node(\"../lead\").set_offset(trueOffset+90)
+	get_node(\"../dot2\").set_pos(get_node(\"../lead\").get_global_pos())
+	get_node(\"../lead\").set_offset(trueOffset+120)
+	get_node(\"../dot3\").set_pos(get_node(\"../lead\").get_global_pos())
+	get_node(\"../lead\").set_offset(trueOffset+150)
+	get_node(\"../dot4\").set_pos(get_node(\"../lead\").get_global_pos())
+	get_node(\"../lead\").set_offset(trueOffset+180)
+	get_node(\"../dot5\").set_pos(get_node(\"../lead\").get_global_pos())
+	maxSpeed= 60
+	currentChange= 0
+	inertia= 0
+	canMove= true
+
+func _fixed_process(delta):
+	var pos = get_global_mouse_pos()
+	var myPos = get_global_pos()
+	canMove = (pos.x >= myPos.x - 20
+		and pos.y >= myPos.y - 20
+		and pos.x <= myPos.x + 20
+		and pos.y <= myPos.y + 20
+		and Input.is_mouse_button_pressed(BUTTON_LEFT))
+	var op= get_node(\"../../Background\").get_opacity()
+	if (canMove && op< 1.20):
+		get_node(\"../../Background\").set_opacity(op+.002)
+	elif(op>0):
+		get_node(\"../../Background\").set_opacity(op-.01)
+func _process(delta):
+	#print(\"I'm processing. Delta= \", delta)
+	currentChange= delta*inertia
+	trueOffset= get_offset()+currentChange
+	var myPos = get_global_pos()
+	var dot=get_node(\"../dot\").get_global_pos()
+	var dot1= get_node(\"../dot1\").get_global_pos()
+	var dot2=get_node(\"../dot2\").get_global_pos()
+	var dot3=get_node(\"../dot3\").get_global_pos()
+	var dot4=get_node(\"../dot4\").get_global_pos()
+	var dot5=get_node(\"../dot5\").get_global_pos()
+	#get_node(\"../lead\").set_offset(trueOffset+50)
+	if (myPos[0]-1<dot[0] and dot[0]<myPos[0]+1 and myPos[1]-1<dot[1] and dot[1]<myPos[1]+1):
+		get_node(\"../lead\").set_offset(trueOffset+180)
+		get_node(\"../dot\").set_opacity(0)
+		get_node(\"../dot\").set_pos(get_node(\"../lead\").get_global_pos())
+		get_node(\"../dot/app\").play(\"Appe\")
+	if (myPos[0]-1<dot1[0] and dot1[0]<myPos[0]+1 and myPos[1]-1<dot1[1] and dot1[1]<myPos[1]+1):
+		get_node(\"../lead\").set_offset(trueOffset+180)
+		get_node(\"../dot1\").set_opacity(0)
+		get_node(\"../dot1\").set_pos(get_node(\"../lead\").get_global_pos())
+		get_node(\"../dot1/app\").play(\"Appe\")
+	if (myPos[0]-1<dot2[0] and dot2[0]<myPos[0]+1 and myPos[1]-1<dot2[1] and dot2[1]<myPos[1]+1):
+		get_node(\"../lead\").set_offset(trueOffset+180)
+		get_node(\"../dot2\").set_opacity(0)
+		get_node(\"../dot2\").set_pos(get_node(\"../lead\").get_global_pos())
+		get_node(\"../dot2/app\").play(\"Appe\")
+	if (myPos[0]-1<dot3[0] and dot3[0]<myPos[0]+1 and myPos[1]-1<dot3[1] and dot3[1]<myPos[1]+1):
+		get_node(\"../lead\").set_offset(trueOffset+180)
+		get_node(\"../dot3\").set_opacity(0)
+		get_node(\"../dot3\").set_pos(get_node(\"../lead\").get_global_pos())
+		get_node(\"../dot3/app\").play(\"Appe\")
+	if (myPos[0]-1<dot4[0] and dot4[0]<myPos[0]+1 and myPos[1]-1<dot4[1] and dot4[1]<myPos[1]+1):
+		get_node(\"../lead\").set_offset(trueOffset+180)
+		get_node(\"../dot4\").set_opacity(0)
+		get_node(\"../dot4\").set_pos(get_node(\"../lead\").get_global_pos())
+		get_node(\"../dot4/app\").play(\"Appe\")
+	if (myPos[0]-1<dot5[0] and dot5[0]<myPos[0]+1 and myPos[1]-1<dot5[1] and dot5[1]<myPos[1]+1):
+		get_node(\"../lead\").set_offset(trueOffset+180)
+		get_node(\"../dot5\").set_opacity(0)
+		get_node(\"../dot5\").set_pos(get_node(\"../lead\").get_global_pos())
+		get_node(\"../dot5/app\").play(\"Appe\")
+
+	set_offset(trueOffset)
+	if canMove:
+		if inertia< maxSpeed:
+			inertia+= 1
+	else:
+		inertia-= 1
+		if inertia<0:
+			inertia= 0
+#
+#func _draw():
+#	draw_circle(Vector2(0, 0), 20, Color(0, 0, 0))
+#	#draw_circle(Vector2(0, 0), 20, Color(255, 255, 255))"
+
+<<<<<<< HEAD
+[sub_resource type="GDScript" id=5]
+
+script/source = "extends Sprite
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+
+func _ready():
+	#set_process(true)
+	pass
+
+#func _process(delta):
+	#_draw()
+
+#func _draw():
+	#draw_circle(Vector2(0, 0), 20, Color(255, 255, 255))
+"
+
+=======
+>>>>>>> db05ffee4eab3242b4fdde68ddf3b0f20d378f98
+[sub_resource type="Animation" id=6]
+
+length = 8.0
+loop = true
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Background:visibility/opacity")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0, 2, 6, 8 ),
+"transitions": FloatArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 1.0, 0.5, 0.5, 1.0 ]
+}
+
+[node name="Node2D" type="Node2D"]
+
+script/script = ExtResource( 1 )
+
+[node name="Background" type="Sprite" parent="."]
+
+visibility/opacity = 0.0
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+
+transform/pos = Vector2( 375, 667 )
+animation = "default"
+
+[node name="Movement" type="AnimationPlayer" parent="."]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Silk = SubResource( 1 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = "Silk"
+
+[node name="Breath" type="Sprite" parent="."]
+
+[node name="Breath2" type="Sprite" parent="."]
+
+[node name="Breathing" type="AnimationPlayer" parent="."]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Breathe = SubResource( 2 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = ""
+
+[node name="Path2D" type="Path2D" parent="."]
+
+curve = SubResource( 3 )
+script/script = ExtResource( 2 )
+
+[node name="lead" type="PathFollow2D" parent="Path2D"]
+
+offset = 0.0
+h_offset = 0.0
+v_offset = 0.0
+rotate = true
+cubic_interp = true
+loop = true
+lookahead = 4.0
+
+[node name="dot" type="Sprite" parent="Path2D"]
+
+[node name="app" type="AnimationPlayer" parent="Path2D/dot"]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Appe = SubResource( 4 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = ""
+
+[node name="dot1" type="Sprite" parent="Path2D"]
+
+transform/pos = Vector2( 0, 2 )
+
+[node name="app" type="AnimationPlayer" parent="Path2D/dot1"]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Appe = SubResource( 7 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = ""
+
+[node name="dot2" type="Sprite" parent="Path2D"]
+
+[node name="app" type="AnimationPlayer" parent="Path2D/dot2"]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Appe = SubResource( 8 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = ""
+
+[node name="dot3" type="Sprite" parent="Path2D"]
+
+[node name="app" type="AnimationPlayer" parent="Path2D/dot3"]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Appe = SubResource( 8 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = ""
+
+[node name="dot4" type="Sprite" parent="Path2D"]
+
+[node name="app" type="AnimationPlayer" parent="Path2D/dot4"]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Appe = SubResource( 8 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = ""
+
+[node name="dot5" type="Sprite" parent="Path2D"]
+
+[node name="app" type="AnimationPlayer" parent="Path2D/dot5"]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Appe = SubResource( 8 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = ""
+
+[node name="Cursor" type="PathFollow2D" parent="Path2D"]
+
+offset = 0.0
+h_offset = 0.0
+v_offset = 0.0
+rotate = true
+cubic_interp = true
+loop = true
+lookahead = 4.0
+script/script = SubResource( 5 )
+
+[node name="Path" type="Sprite" parent="Path2D/Cursor"]
+
+transform/scale = Vector2( 0.8, 0.8 )
+texture = ExtResource( 3 )
+script/script = SubResource( 5 )
+
+[node name="Particles2D" type="Particles2D" parent="Path2D/Cursor/Path"]
+
+config/amount = 32
+config/lifetime = 4.0
+config/time_scale = 4.0
+config/process_mode = 1
+params/direction = -90.0
+params/spread = 20.0
+params/linear_velocity = 20.0
+params/spin_velocity = 0.0
+params/orbit_velocity = 0.0
+params/gravity_direction = 0.0
+params/gravity_strength = 5.0
+params/radial_accel = 0.0
+params/tangential_accel = 0.0
+params/damping = 0.0
+params/initial_angle = 0.0
+params/initial_size = 4.0
+params/final_size = 1.0
+params/hue_variation = 0.0
+params/anim_speed_scale = 1.0
+params/anim_initial_pos = 0.0
+
+[node name="Opacity" type="AnimationPlayer" parent="."]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Breathe = SubResource( 6 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = ""
+
+<<<<<<< HEAD
+=======
+[node name="Music" type="StreamPlayer" parent="."]
+
+stream/stream = null
+stream/play = true
+stream/loop = true
+stream/volume_db = 0.0
+stream/autoplay = false
+stream/paused = false
+stream/loop_restart_time = 0.0
+stream/buffering_ms = 500
+
+>>>>>>> db05ffee4eab3242b4fdde68ddf3b0f20d378f98
+

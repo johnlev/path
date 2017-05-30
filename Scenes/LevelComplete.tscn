@@ -1,0 +1,237 @@
+[gd_scene load_steps=8 format=1]
+
+[ext_resource path="res://Fonts/avenir-next-regular.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Textures/forwardButton.png" type="Texture" id=2]
+[ext_resource path="res://Textures/forwardButtonSelected.png" type="Texture" id=3]
+
+[sub_resource type="GDScript" id=4]
+
+script/source = "extends Node
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+
+var titleLabel = null
+var quotesLabel = null
+var forwardButton = null
+var stopped = false
+var t = null
+var quotes = []
+
+func _ready():
+	# Called every time the node is added to the scene.
+	# Initialization here
+	titleLabel = get_node(\"Panel/Title label\")
+	quotesLabel = get_node(\"Panel/Quotes label\")
+	quotesLabel.set_text(\"Loading...\")
+	forwardButton = get_node(\"Panel/Forward button\")
+	forwardButton.connect(\"pressed\", self, \"forwardPressed\")
+	start_loading()
+	pass
+
+func forwardPressed():
+	stopped = true
+	t.wait_to_finish()
+	get_tree().change_scene(\"res://Scenes/Menu.tscn\")
+
+func start_loading():
+	t = Thread.new()
+	t.start(self, \"_load_a_message\", {\"username\": \"john\", \"thread\": t})
+
+func _load_a_message(params):
+	var username = params.username
+	print(\"loading...\")
+	var err=0
+	var http = HTTPClient.new() # Create the Client
+	
+	var err = http.connect(\"pathserver.herokuapp.com\",80, false) # Connect to host/port
+	assert(err==OK) # Make sure connection was OK
+
+	# Wait until resolved and connected
+	while( http.get_status()==HTTPClient.STATUS_CONNECTING or http.get_status()==HTTPClient.STATUS_RESOLVING):
+		http.poll()
+		print(\"Connecting..\")
+		OS.delay_msec(500)
+
+	assert( http.get_status() == HTTPClient.STATUS_CONNECTED ) # Could not connect
+
+	# Some headers
+
+	var headers=[
+		\"Accept: */*\",
+	]
+
+	err = http.request(HTTPClient.METHOD_GET, \"/quote?username=\" + username, headers) # Request a page from the site (this one was chunked..)
+
+	assert( err == OK ) # Make sure all is OK
+
+	while (http.get_status() == HTTPClient.STATUS_REQUESTING):
+		# Keep polling until the request is going on
+		http.poll()
+		print(\"Requesting..\")
+		OS.delay_msec(500)
+
+
+	assert( http.get_status() == HTTPClient.STATUS_BODY or http.get_status() == HTTPClient.STATUS_CONNECTED ) # Make sure request finished well.
+
+	print(\"response? \",http.has_response()) # Site might not have a response.
+
+
+	if (http.has_response()):
+		# If there is a response..
+
+		var headers = http.get_response_headers_as_dictionary() # Get response headers
+		print(\"code: \",http.get_response_code()) # Show response code
+		print(\"**headers:\\\\n\",headers) # Show headers
+
+		# Getting the HTTP Body
+
+		if (http.is_response_chunked()):
+			# Does it use chunks?
+			print(\"Response is Chunked!\")
+		else:
+			# Or just plain Content-Length
+			var bl = http.get_response_body_length()
+			print(\"Response Length: \",bl)
+
+		# This method works for both anyway
+
+		var rb = RawArray() # Array that will hold the data
+
+		while(http.get_status()==HTTPClient.STATUS_BODY):
+			# While there is body left to be read
+			http.poll()
+			var chunk = http.read_response_body_chunk() # Get a chunk
+			if (chunk.size()==0):
+			    # Got nothing, wait for buffers to fill a bit
+			    OS.delay_usec(1000)
+			else:
+			    rb = rb + chunk # Append to read buffer
+
+
+		# Done!
+
+		print(\"bytes got: \",rb.size())
+		var text = rb.get_string_from_ascii()
+		print(\"Text: \",text)
+		quotes.append(text)
+		call_deferred(\"_update_quotes\", params.thread)
+
+func _update_quotes(t):
+	var r = t.wait_to_finish()
+	if (quotes.size() < 3 and !stopped):
+		self.start_loading()
+	
+	var text = \"\"
+	for i in range(quotes.size()):
+		var quote = quotes[i];
+		var wrapped = \"\"
+		for i in range(quote.length()):
+			if (i % 40 == 0 and i != 0):
+				wrapped += \"\\n\"
+			wrapped += quote[i]
+		text += wrapped + \"\\n\\n\"
+	quotesLabel.set_text(text)"
+
+[sub_resource type="StyleBoxFlat" id=1]
+
+content_margin/left = -1.0
+content_margin/right = -1.0
+content_margin/top = -1.0
+content_margin/bottom = -1.0
+bg_color = Color( 0.847059, 0.929412, 0.94902, 1 )
+light_color = Color( 0.8, 0.8, 0.8, 1 )
+dark_color = Color( 0.8, 0.8, 0.8, 1 )
+border_size = 0
+border_blend = true
+draw_bg = true
+
+[sub_resource type="DynamicFont" id=3]
+
+font/size = 35
+font/use_mipmaps = false
+font/use_filter = false
+font/font = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+
+font/size = 70
+font/use_mipmaps = true
+font/use_filter = false
+font/font = ExtResource( 1 )
+
+[node name="Server Comunicator" type="Node"]
+
+script/script = SubResource( 4 )
+
+[node name="Panel" type="Panel" parent="."]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = -22.0
+margin/top = -22.0
+margin/right = 761.0
+margin/bottom = 1388.0
+custom_styles/panel = SubResource( 1 )
+
+[node name="Quotes label" type="Label" parent="Panel"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 61.0
+margin/top = 285.0
+margin/right = 724.0
+margin/bottom = 1347.0
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Quote1
+Quote2
+Quote3
+Quote4
+Quote5
+"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="Title label" type="Label" parent="Panel"]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 140.0
+margin/top = 112.0
+margin/right = 646.0
+margin/bottom = 195.0
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Level Complete"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="Forward button" type="TextureButton" parent="Panel"]
+
+focus/ignore_mouse = false
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 2
+margin/left = 681.0
+margin/top = 102.0
+margin/right = 742.0
+margin/bottom = 196.0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+textures/normal = ExtResource( 2 )
+textures/pressed = ExtResource( 3 )
+params/resize_mode = 0
+params/stretch_mode = 0
+
+

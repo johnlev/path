@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=1]
+[gd_scene load_steps=15 format=1]
 
 [ext_resource path="res://Fonts/JuliusSansOne-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Textures/levelsButton.png" type="Texture" id=2]
@@ -23,14 +23,14 @@ border_size = 0
 border_blend = true
 draw_bg = true
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="DynamicFont" id=2]
 
 font/size = 100
 font/use_mipmaps = false
 font/use_filter = false
 font/font = ExtResource( 1 )
 
-[sub_resource type="GDScript" id=2]
+[sub_resource type="GDScript" id=3]
 
 script/source = "extends TextureButton
 
@@ -47,6 +47,40 @@ func _ready():
 func _pressed():
 	get_tree().change_scene(\"res://Scenes/Game.tscn\")"
 
+[sub_resource type="GDScript" id=4]
+
+script/source = "extends TextureButton
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+
+func _ready():
+	# Called every time the node is added to the scene.
+	# Initialization here
+	set_pressed(true)
+	pass
+
+func _pressed():
+	get_tree().change_scene(\"res://Scenes/MessageSend.tscn\")"
+
+[sub_resource type="GDScript" id=5]
+
+script/source = "extends TextureButton
+
+# class member variables go here, for example:
+# var a = 2
+# var b = \"textvar\"
+
+func _ready():
+	# Called every time the node is added to the scene.
+	# Initialization here
+	set_pressed(true)
+	pass
+
+func _pressed():
+	get_tree().change_scene(\"res://Scenes/User.tscn\")"
+
 [node name="Menu" type="Panel"]
 
 focus/ignore_mouse = false
@@ -54,9 +88,9 @@ focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 2
 margin/left = -2.0
-margin/top = 0.0
+margin/top = -1.0
 margin/right = 749.0
-margin/bottom = 1331.0
+margin/bottom = 1330.0
 custom_styles/panel = SubResource( 1 )
 
 [node name="MenuTitleLabel" type="Label" parent="."]
@@ -69,7 +103,7 @@ margin/left = 191.0
 margin/top = 75.0
 margin/right = 576.0
 margin/bottom = 232.0
-custom_fonts/font = SubResource( 3 )
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Path"
 align = 1
@@ -95,7 +129,7 @@ textures/normal = ExtResource( 2 )
 textures/pressed = ExtResource( 3 )
 params/resize_mode = 1
 params/stretch_mode = 0
-script/script = SubResource( 2 )
+script/script = SubResource( 3 )
 
 [node name="MessageButton" type="TextureButton" parent="."]
 
@@ -114,6 +148,7 @@ textures/normal = ExtResource( 4 )
 textures/pressed = ExtResource( 5 )
 params/resize_mode = 1
 params/stretch_mode = 0
+script/script = SubResource( 4 )
 
 [node name="ShareButton" type="TextureButton" parent="."]
 
@@ -121,9 +156,9 @@ focus/ignore_mouse = false
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 2
-margin/left = 207.0
+margin/left = 206.0
 margin/top = 533.0
-margin/right = 557.0
+margin/right = 556.0
 margin/bottom = 629.0
 toggle_mode = false
 enabled_focus_mode = 2
@@ -132,6 +167,7 @@ textures/normal = ExtResource( 6 )
 textures/pressed = ExtResource( 7 )
 params/resize_mode = 1
 params/stretch_mode = 0
+script/script = SubResource( 5 )
 
 [node name="SoundSwitch" type="CheckButton" parent="."]
 

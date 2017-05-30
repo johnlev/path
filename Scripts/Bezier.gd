@@ -50,10 +50,10 @@ func _init():
 		
 		curve.add_point(Vector2(posx,posy),inVec,-outVec)
 #	curve.add_point(Vector2(marg+7,marg),Vector2(mag * cos(120), mag * sin(120)),-Vector2(mag * cos(-90), mag * sin(-90)))
-func _draw():
-	var points = curve.tesselate(5,4)
-	for i in range(1,points.size()):
-		draw_line(points[i],points[i-1],Color8((255-(i%255)),i%255,0),2)
+#func _draw():
+#	var points = curve.tesselate(5,4)
+#	for i in range(1,points.size()):
+#		draw_line(points[i],points[i-1],Color8((255-(i%255)),i%255,0),2)
 func _ready():
-	_draw()
+#	_draw()
 	pass
